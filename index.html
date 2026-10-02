@@ -316,7 +316,6 @@ textarea::placeholder{color:var(--muted);opacity:.75}
   <h2 class="display" data-t="flow_h"></h2>
   <p class="muted" data-t="flow_p"></p>
   <ol class="tl" id="tl"></ol>
-  <div class="section"><h3 data-t="needs"></h3><ul class="needs" id="needs"></ul></div>
   <div class="section"><h3 data-t="ings"></h3><div id="flowTypes"></div></div>
   <div class="section"><h3 data-t="drinks_title"></h3><p class="muted sm" data-t="drinks_p"></p><div id="drinkList"></div></div>
   <p class="foot" data-t="foot"></p>
@@ -570,7 +569,6 @@ function applyLang(){
   document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
   $("idea").placeholder=L().ph;
   $("tl").innerHTML=L().tl.map(([t,b,p])=>`<li><time class="${t.length>5?'w':''}">${t}</time><div><b>${b}</b><p>${p}</p></div></li>`).join("");
-  $("needs").innerHTML=L().needlist.map(x=>`<li>${x}</li>`).join("");
   $("flowTypes").innerHTML=ORDER.map(k=>`<div class="ing">${coaster(k)}<div><b>${TYPES[k].name}</b><span>${TYPES[k][S.lang].team}</span></div></div>`).join("");
   $("drinkList").innerHTML=Object.keys(DRINKS).map(k=>{const D=DRINKS[k];return `<div class="dl">${drink(k,{w:44})}<div><b>${D.name}</b><span>${(COMBO[k]||k).split("").map(t=>TYPES[t].name).join(" + ")}. ${GN[S.lang][D.glass]}: ${D[S.lang][0]}</span></div></div>`;}).join("");
   if(S.me) fillResult(false);
