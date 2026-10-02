@@ -330,7 +330,7 @@ en:{hall:"Machine Hall South",flow:"Schedule",start_h:"Which drink are you tonig
  qord:["First question","Second question","Third question","Fourth question","Fifth question","Sixth question","Seventh question","Last one"],
  mixing:"Shaking your drink…",mixing_team:"Mixing your drink…",ing_title:"Your kind of ingredient",drinks_title:"The twelve drinks",drinks_p:"Every team gets one of these. Two mixes can choose between two drinks. A handy list for the bar.",res_bar:"Your drink",redo:"Retake",res_k:"Tonight I'm",
  shot:"Screenshot the card for your story.",role:"Your role in a team",
- coaster:c=>`Grab a <b>${c}</b> coaster at the bar. That's how your teammates will spot you.`,
+ coaster:c=>`Grab a <b>${c}</b> coaster at the bar. That's how your teammates will spot you.`,coasterB:"Grab <b>any coaster you like</b> at the bar. Every team can use a Bartender.",bart_added:t=>`As your Bartender, you added ${t}. `,
  find_team:"Find your team",team_bar:"Your table",team_h:"Two people, a different color.",
  team_p:"Look at the coasters. Tap who's joining your table.",you:"You",open:"open",
  h0:"Two works too. Three is best.",h1:"Everyone's the same color. Find someone with a different ingredient.",
@@ -360,7 +360,7 @@ de:{hall:"Maschinenhalle Süd",flow:"Ablauf",start_h:"Welcher Drink bist du heut
  qord:["Erste Frage","Zweite Frage","Dritte Frage","Vierte Frage","Fünfte Frage","Sechste Frage","Siebte Frage","Letzte Frage"],
  mixing:"Dein Drink wird geschüttelt …",mixing_team:"Euer Drink wird gemixt …",ing_title:"Deine Zutaten an der Bar",drinks_title:"Die zwölf Drinks",drinks_p:"Jedes Team bekommt einen davon. Bei zwei Mischungen kann das Team zwischen zwei Drinks wählen. Eine Liste für die Bar.",res_bar:"Dein Drink",redo:"Nochmal",res_k:"Heute Abend bin ich",
  shot:"Mach einen Screenshot für deine Story.",role:"Deine Rolle im Team",
- coaster:c=>`Hol dir an der Bar den Untersetzer in <b>${c}</b>. Daran erkennen dich deine Teammitglieder.`,
+ coaster:c=>`Hol dir an der Bar den Untersetzer in <b>${c}</b>. Daran erkennen dich deine Teammitglieder.`,coasterB:"Hol dir an der Bar <b>einen Untersetzer in deiner Lieblingsfarbe</b>. Jedes Team kann eine Bartenderin oder einen Bartender brauchen.",bart_added:t=>`Als Bartender hast du ${t} dazugegeben. `,
  find_team:"Team finden",team_bar:"Euer Tisch",team_h:"Zwei Leute, eine andere Farbe.",
  team_p:"Schaut auf die Untersetzer. Tippt an, wer sich zu euch an den Tisch stellt.",you:"Du",open:"frei",
  h0:"Zu zweit geht auch, zu dritt ist es am schönsten.",h1:"Alle dieselbe Farbe. Sucht noch jemanden mit einer anderen Zutat.",
@@ -399,6 +399,9 @@ const TYPES={
   en:{color:"teal",desc:"You bring the bubbles. Your ideas come fast and sometimes from somewhere else entirely, and that's what makes the drink come alive.",team:"You bring the spark: the idea everyone laughs at first and then everyone wants."},
   de:{color:"Türkis",desc:"Du bringst die Bläschen. Deine Ideen kommen schnell und manchmal von ganz woanders, und genau das macht den Drink lebendig.",team:"Du lieferst den Funken: die Idee, über die erst alle lachen und die dann alle wollen."}}
 };
+TYPES.B={name:"Bartender",c:"--brass",ex:{en:["Citrus","Spirit","Syrup","Fizz"],de:["Citrus","Spirit","Syrup","Fizz"]},
+  en:{desc:"A rare one. You scored exactly the same on every ingredient, so you can mix anything. Join any team and you complete its drink.",team:"You add whatever the team is missing."},
+  de:{desc:"Selten. Du hast bei jeder Zutat genau gleich viele Punkte, also kannst du alles mixen. Schließ dich irgendeinem Team an, du machst den Drink komplett.",team:"Du bringst mit, was dem Team fehlt."}};
 const ORDER=["C","S","Y","F"];
 const Q={
 en:[["You arrive at a party where you barely know anyone. You…",{C:"watch who's talking to whom first",S:"grab a drink and find a good spot",Y:"talk to the first person standing alone",F:"wonder what happens if you just start dancing"}],
@@ -505,7 +508,8 @@ function drink(key,o={}){
    <path d="${G.out}" fill="none" stroke="${st}" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
    ${G.base?`<path d="${G.base}" stroke="${st}" stroke-width="2" opacity=".5"/>`:""}${stem}${rimx}${gar}</svg>`;
 }
-const comboKey=()=>{const all=[S.me,...S.mates];return ORDER.filter(k=>all.includes(k)).join("");};
+const bartFill=()=>{const base=S.mates.filter(k=>k!=="B");return ORDER.find(k=>!base.includes(k));};
+const comboKey=()=>{const all=[S.me,...S.mates].filter(k=>k!=="B");if(S.me==="B")all.push(bartFill());return ORDER.filter(k=>all.includes(k)).join("");};
 const drinkKey=()=>S.pick||comboKey();
 const AREAS=[
  ["body",{en:["Health","read your calendar and slip in walks exactly where you actually have time"],de:["Gesundheit","deinen Kalender lesen und Spaziergänge genau dort einplanen, wo du wirklich Zeit hast"]}],
@@ -552,6 +556,8 @@ function glass(layers,slots,o={}){
    <path d="M55 44 L66 236" stroke="#fff" stroke-opacity=".35" stroke-width="5" stroke-linecap="round"/>${gar}</svg>`;
 }
 function coaster(t){
+  if(t==="B"){const id="r"+(++uid);const q=["--citrus","--spirit","--syrup","--fizz"].map((c,i)=>{const a0=i*Math.PI/2-Math.PI/2,a1=a0+Math.PI/2;return `<path d="M60 60 L${(60+58*Math.cos(a0)).toFixed(2)} ${(60+58*Math.sin(a0)).toFixed(2)} A58 58 0 0 1 ${(60+58*Math.cos(a1)).toFixed(2)} ${(60+58*Math.sin(a1)).toFixed(2)} Z" fill="var(${c})"/>`;}).join("");
+    return `<svg viewBox="0 0 120 120" role="img" aria-label="Bartender">${q}<circle cx="60" cy="60" r="40" fill="var(--brass)"/><circle cx="60" cy="60" r="34" fill="none" stroke="var(--cink)" stroke-opacity=".3" stroke-width="1.2"/><text x="60" y="66" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="17" fill="var(--cink)">Bartender</text></svg>`;}
   const id="r"+(++uid),T=TYPES[t];
   return `<svg viewBox="0 0 120 120" role="img" aria-label="${T.name}">
    <defs><path id="${id}" d="M60 60 m-49 0 a49 49 0 1 1 98 0 a49 49 0 1 1 -98 0"/></defs>
@@ -623,6 +629,7 @@ function mix(){
   const c={C:0,S:0,Y:0,F:0};S.answers.forEach(a=>c[a]++);
   const max=Math.max(...Object.values(c)),tied=ORDER.filter(k=>c[k]===max);
   let me=tied[0];for(let i=S.answers.length-1;i>=0;i--){if(tied.includes(S.answers[i])){me=S.answers[i];break;}}
+  if(ORDER.every(k=>c[k]===max)) me="B";
   S.me=me;S.counts=c;
   $("mixtext").textContent=L().mixing;show("s-mixing");
   setTimeout(()=>{fillResult(true);show("s-result");try{navigator.vibrate&&navigator.vibrate([20,40,30])}catch(e){}},calm?300:1500);
@@ -632,12 +639,13 @@ function fillResult(anim){
   story.style.setProperty("--tc",`var(${T.c})`);
   if(anim){story.classList.remove("reveal");void story.offsetWidth;story.classList.add("reveal");}
   $("rname").textContent=T.name;
+  $("rname").style.fontSize=T.name.length>7?"clamp(60px,17vw,84px)":"";
   $("g-result").innerHTML=glass(byOrder(S.answers),8,{w:150,ice:true,stroke:"rgba(243,236,221,.7)"});
   $("rrecipe").innerHTML=ORDER.filter(k=>c[k]).sort((a,b)=>c[b]-c[a]).map(k=>
     `<li><span><span class="sw" style="background:var(${TYPES[k].c})"></span>${TYPES[k].name}</span><span class="lead-dots"></span><span class="amt">${c[k]} cl</span></li>`).join("");
   $("rdesc").textContent=T[S.lang].desc;
-  $("rpills").innerHTML=T.ex[S.lang].map(x=>`<span class="pill"><i style="background:var(${T.c})"></i>${x}</span>`).join("");$("rteam").textContent=T[S.lang].team;
-  $("rcoaster").innerHTML=coaster(S.me);$("rcoasterp").innerHTML=L().coaster(T[S.lang].color);
+  $("rpills").innerHTML=T.ex[S.lang].map((x,i)=>`<span class="pill"><i style="background:var(${S.me==="B"?TYPES[ORDER[i]].c:T.c})"></i>${x}</span>`).join("");$("rteam").textContent=T[S.lang].team;
+  $("rcoaster").innerHTML=coaster(S.me);$("rcoasterp").innerHTML=S.me==="B"?L().coasterB:L().coaster(T[S.lang].color);
 }
 
 /* ---------- team ---------- */
@@ -655,15 +663,15 @@ function renderTeam(){
     $("chips").appendChild(b);
   });
   const d=new Set([S.me,...S.mates]).size;
-  $("teamHint").textContent=!S.mates.length?L().h0:d===1?L().h1:S.mates.length===1?L().h2:L().h3;
-  $("mixBtn").disabled=!(S.mates.length&&d>=2);
+  $("teamHint").textContent=!S.mates.length?L().h0:(d===1&&S.me!=="B")?L().h1:S.mates.length===1?L().h2:L().h3;
+  $("mixBtn").disabled=!(S.mates.length&&(d>=2||S.me==="B"));
 }
 function fillTeamResult(anim){
   const k=drinkKey(),D=DRINKS[k],c=comboKey(),alt=ALT[c];
   S.team=D.name;$("tname").innerHTML=D.name+(D.zh?`<span class="zh">${D.zh}</span>`:"");
-  $("tname").style.fontSize=D.name.length>12?"clamp(46px,14vw,62px)":"";
+  $("tname").style.fontSize=D.name.length>12?"clamp(46px,14vw,62px)":"clamp(58px,19vw,80px)";
   $("tmeta").textContent=`${GN[S.lang][D.glass]}: ${D[S.lang][0]}`;
-  $("tdesc").textContent=D[S.lang][1];
+  $("tdesc").textContent=(S.me==="B"?L().bart_added(TYPES[bartFill()].name):"")+D[S.lang][1];
   $("g-team").innerHTML=drink(k,{w:200,pour:anim});
   $("versions").innerHTML=alt?`<span class="vlbl">${L().version}</span>`+[c,alt].map(x=>`<button aria-pressed="${x===k}" data-v="${x}">${DRINKS[x].name}</button>`).join(""):"";
   $("versions").querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{buzz();S.pick=b.dataset.v===c?null:b.dataset.v;fillTeamResult(true);});
