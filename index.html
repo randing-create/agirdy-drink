@@ -180,6 +180,9 @@ textarea::placeholder{color:var(--muted);opacity:.75}
 .dl svg{width:44px;height:auto}
 .dl b{font-family:var(--display);font-weight:800;font-size:19px;display:block;line-height:1.1}
 .dl span{font-size:14.5px;color:var(--muted)}
+.hints{margin:6px 0 0}
+.hints p{margin:8px 0 0;font-size:15.5px;font-style:italic;color:var(--muted)}
+.hints b{font-family:var(--display);font-style:normal;font-weight:800;font-size:17px;color:var(--ink);margin-right:6px}
 .src{font-size:12.5px;font-style:italic;color:var(--muted);text-align:center;margin:6px 0 0}
 .story .ai{margin-top:10px;padding-top:10px;border-top:1px dotted rgba(201,161,91,.45);font-size:14px;color:rgba(243,236,221,.75);font-style:italic}
 .story .ai b{font-family:var(--display);font-style:normal;font-weight:800;font-size:18px;color:#F3ECDD;display:block}
@@ -276,6 +279,7 @@ textarea::placeholder{color:var(--muted);opacity:.75}
   <h2 class="display" data-t="wheel_h"></h2>
   <p class="muted" data-t="wheel_p"></p>
   <div class="wheelwrap" id="wheel"></div>
+  <div class="hints" id="hints"></div>
   <p class="src" data-t="wheel_src"></p>
   <div class="grow"></div>
   <div class="cta"><button class="btn" id="areasBtn" disabled></button></div>
@@ -333,10 +337,10 @@ en:{hall:"Machine Hall South",flow:"Schedule",start_h:"Which drink are you tonig
  h0:"Two works too. Three is best.",h1:"Everyone's the same color. Find someone with a different ingredient.",
  h2:"Two works. A third makes the drink rounder.",h3:"Your drink is ready.",mix_btn:"Mix our drink",change:"Change",
  tres_k:"Together you make a",to_ch:"On to the challenge",wheel_bar:"Wheel of Life",
- wheel_h:"Where could AI help you most?",wheel_p:"Pick one or two areas of your life.",chosen:"chosen",
+ wheel_h:"Where could AI help you most?",wheel_p:"Pick up to three areas of your life.",chosen:"chosen",
  min1:"Pick at least one",wheel_go:"Mix my drink",wheel_src:"Adapted from the seven areas of Tony Robbins' Wheel of Life (Life by Design workbook), building on the classic wheel commonly attributed to Paul J. Meyer.",card_ai:"AI could help me with",ch_bar:"Your challenge",ch_h:"Where do your wheels meet?",
  ch_p:"Show each other your cards. Pick an area you share, or combine two. Then write one idea for something AI could build.",order:"Your order",
- ph:"An app that reminds us when we last called our grandparents.",ex:a=>`For example ${a}.`,
+ ph:"An app that reminds us when we last called our grandparents.",ex:a=>`AI could ${a}.`,
  submit:"Submit idea",done_bar:"Submitted",done_h:"Your idea is in the running.",team:"Team",
  done_p1:"<b>At 20:30</b> everyone votes by phone. The three favorite ideas get built live on stage with AI.",
  done_p2:"Want to build it yourselves? Submit your own demo by Oct 24. Every demo goes into the gallery.",
@@ -344,7 +348,7 @@ en:{hall:"Machine Hall South",flow:"Schedule",start_h:"Which drink are you tonig
  flow_p:"The game hooks into your program. Nothing moves.",needs:"What's needed",ings:"The four ingredients",
  foot:"Demo version. No data is stored.",
  tl:[["Before","Prepare","QR codes on tables and at the bar. Coasters in four colors, about 20 each."],
-  ["17:30","Quiz and team","Scan, take the quiz, pick one or two life areas, grab a coaster, find two people with a different color. Anyone who'd rather not play just enjoys a drink."],
+  ["17:30","Quiz and team","Scan, take the quiz, pick up to three life areas, grab a coaster, find two people with a different color. Anyone who'd rather not play just enjoys a drink."],
   ["18:00","Welcome","One line is enough: “If you don't know your drink yet, scan the code.”"],
   ["19:30","Idea over dinner","Teams compare their cards, find where their wheels meet and submit one idea in one sentence. Closes at 20:15."],
   ["20:30","Live AI session","Five minutes of phone voting. The top 3 get built live, about eight minutes each, with the team on stage."],
@@ -363,10 +367,10 @@ de:{hall:"Maschinenhalle Süd",flow:"Ablauf",start_h:"Welcher Drink bist du heut
  h0:"Zu zweit geht auch, zu dritt ist es am schönsten.",h1:"Alle dieselbe Farbe. Sucht noch jemanden mit einer anderen Zutat.",
  h2:"Zu zweit passt. Eine dritte Person macht den Drink runder.",h3:"Euer Drink ist bereit.",mix_btn:"Unseren Drink mixen",change:"Ändern",
  tres_k:"Zusammen seid ihr ein",to_ch:"Zur Challenge",wheel_bar:"Rad des Lebens",
- wheel_h:"Wo könnte KI dir am meisten helfen?",wheel_p:"Wähl ein oder zwei Lebensbereiche.",chosen:"gewählt",
+ wheel_h:"Wo könnte KI dir am meisten helfen?",wheel_p:"Wähl bis zu drei Lebensbereiche.",chosen:"gewählt",
  min1:"Mindestens einen wählen",wheel_go:"Meinen Drink mixen",wheel_src:"Angelehnt an die sieben Bereiche aus Tony Robbins' Wheel of Life (Workbook „Life by Design“), aufbauend auf dem klassischen Rad, das meist Paul J. Meyer zugeschrieben wird.",card_ai:"KI könnte mir helfen bei",ch_bar:"Eure Challenge",ch_h:"Wo treffen sich eure Räder?",
  ch_p:"Zeigt euch eure Karten. Wählt einen Bereich, den ihr teilt, oder verbindet zwei. Dann schreibt eine Idee, was KI bauen könnte.",order:"Eure Bestellung",
- ph:"Eine App, die uns erinnert, wann wir zuletzt mit den Großeltern telefoniert haben.",ex:a=>`Zum Beispiel ${a}.`,
+ ph:"Eine App, die uns erinnert, wann wir zuletzt mit den Großeltern telefoniert haben.",ex:a=>`KI könnte ${a}.`,
  submit:"Idee einreichen",done_bar:"Eingereicht",done_h:"Eure Idee ist im Rennen.",team:"Team",
  done_p1:"<b>Um 20:30</b> stimmen alle per Handy ab. Die drei beliebtesten Ideen werden live auf der Bühne mit KI gebaut.",
  done_p2:"Lust, selbst zu bauen? Reicht bis 24.10. eine eigene Demo ein. Alle Demos kommen in die Galerie.",
@@ -374,7 +378,7 @@ de:{hall:"Maschinenhalle Süd",flow:"Ablauf",start_h:"Welcher Drink bist du heut
  flow_p:"Das Spiel hängt sich an euer Programm. Kein Programmpunkt verschiebt sich.",needs:"Was gebraucht wird",ings:"Die vier Zutaten",
  foot:"Demo-Version. Es werden keine Daten gespeichert.",
  tl:[["Vorher","Vorbereiten","QR-Codes auf den Tischen und an der Bar. Untersetzer in vier Farben, je etwa 20."],
-  ["17:30","Test und Team","Scannen, Test machen, ein oder zwei Lebensbereiche wählen, Untersetzer holen, zwei Leute mit anderer Farbe finden. Wer nicht mitspielen will, trinkt einfach."],
+  ["17:30","Test und Team","Scannen, Test machen, bis zu drei Lebensbereiche wählen, Untersetzer holen, zwei Leute mit anderer Farbe finden. Wer nicht mitspielen will, trinkt einfach."],
   ["18:00","Begrüßung","Ein Satz reicht: „Wer seinen Drink noch nicht kennt, scannt den Code.“"],
   ["19:30","Idee beim Buffet","Teams vergleichen ihre Karten, finden, wo sich ihre Räder treffen, und reichen eine Idee in einem Satz ein. Schluss um 20:15."],
   ["20:30","Live-KI-Session","Fünf Minuten Abstimmung per Handy. Die Top 3 werden live gebaut, je etwa acht Minuten, mit dem Team auf der Bühne."],
@@ -505,13 +509,13 @@ function drink(key,o={}){
 const comboKey=()=>{const all=[S.me,...S.mates];return ORDER.filter(k=>all.includes(k)).join("");};
 const drinkKey=()=>S.pick||comboKey();
 const AREAS=[
- ["body",{en:["Health","a break reminder that doesn't nag"],de:["Gesundheit","eine Pausen-Erinnerung, die nicht nervt"]}],
- ["emotions",{en:["Emotions","a one-minute evening check-in that asks how your day really was"],de:["Emotionen","ein Ein-Minuten-Check-in am Abend, der fragt, wie dein Tag wirklich war"]}],
- ["relationships",{en:["Relationships","a nudge to call friends and family you haven't spoken to in a while"],de:["Beziehungen","ein Anstoß, Freunde und Familie anzurufen, von denen man lange nichts gehört hat"]}],
- ["time",{en:["Time","an assistant that turns a messy week into a realistic plan"],de:["Zeit","ein Assistent, der eine chaotische Woche in einen realistischen Plan verwandelt"]}],
- ["career",{en:["Mission","a sparring partner that sharpens your next big idea"],de:["Mission","ein Sparringspartner, der deine nächste große Idee schärft"]}],
- ["finances",{en:["Finances","a calculator that shows where the money actually goes"],de:["Finanzen","ein Rechner, der zeigt, wohin das Geld eigentlich geht"]}],
- ["celebrate",{en:["Joy","a random generator for weekend adventures"],de:["Freude","ein Zufallsgenerator für Wochenend-Abenteuer"]}]
+ ["body",{en:["Health","read your calendar and slip in walks exactly where you actually have time"],de:["Gesundheit","deinen Kalender lesen und Spaziergänge genau dort einplanen, wo du wirklich Zeit hast"]}],
+ ["emotions",{en:["Emotions","listen to a one-minute voice note each night and show you the patterns in your week"],de:["Emotionen","jeden Abend eine Sprachnotiz von einer Minute anhören und dir die Muster deiner Woche zeigen"]}],
+ ["relationships",{en:["Relationships","remember the little things friends told you and nudge you with the right message at the right moment"],de:["Beziehungen","sich die kleinen Dinge merken, die Freunde erzählt haben, und dich im richtigen Moment an die richtige Nachricht erinnern"]}],
+ ["time",{en:["Time","turn a photo of your messy to-do list into a realistic plan for the week"],de:["Zeit","aus einem Foto deiner chaotischen To-do-Liste einen realistischen Wochenplan machen"]}],
+ ["career",{en:["Mission","play your toughest customer and poke holes in your next big idea before anyone else does"],de:["Mission","deinen härtesten Kunden spielen und Löcher in deine nächste große Idee bohren, bevor es andere tun"]}],
+ ["finances",{en:["Finances","read your bank export and explain in plain words where your money went this month"],de:["Finanzen","deinen Kontoauszug lesen und in einfachen Worten erklären, wohin dein Geld diesen Monat gegangen ist"]}],
+ ["celebrate",{en:["Joy","plan a surprise Saturday from your mood and budget, down to the playlist"],de:["Freude","aus deiner Stimmung und deinem Budget einen Überraschungs-Samstag planen, bis hin zur Playlist"]}]
 ];
 const S={lang:"en",answers:[],me:null,mates:[],areas:[],team:null};
 const $=id=>document.getElementById(id);
@@ -684,15 +688,16 @@ function renderWheel(){
     segs+=`<g class="seg${on?' on':''}" role="button" tabindex="0" aria-pressed="${on}" data-a="${id}"><path d="M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r} ${r} 0 0 0 ${x3} ${y3} Z"/>${label(txt[S.lang][0],lx,ly)}</g>`;
   });
   $("wheel").innerHTML=`<svg class="wheel" viewBox="0 0 340 340" aria-label="Wheel of Life">${segs}
-    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="32" fill="var(--brass)">${S.areas.length}/2</text>
+    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="32" fill="var(--brass)">${S.areas.length}/3</text>
     <text x="${cx}" y="${cy+22}" text-anchor="middle" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="12" fill="var(--muted)">${L().chosen}</text></svg>`;
   $("wheel").querySelectorAll(".seg").forEach(g=>{
     const t=()=>{const id=g.dataset.a;buzz();
-      if(S.areas.includes(id))S.areas=S.areas.filter(x=>x!==id);else if(S.areas.length<2)S.areas.push(id);
+      if(S.areas.includes(id))S.areas=S.areas.filter(x=>x!==id);else if(S.areas.length<3)S.areas.push(id);
       renderWheel();const f=$("wheel").querySelector(`[data-a="${id}"]`);f&&f.focus({preventScroll:true});};
     g.addEventListener("click",t);
     g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t();}});
   });
+  $("hints").innerHTML=AREAS.filter(a=>S.areas.includes(a[0])).map(a=>`<p><b>${a[1][S.lang][0]}</b>${L().ex(a[1][S.lang][1])}</p>`).join("");
   $("areasBtn").disabled=S.areas.length<1;
   $("areasBtn").textContent=S.areas.length<1?L().min1:L().find_team;
 }

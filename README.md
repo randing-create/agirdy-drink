@@ -9,7 +9,7 @@ No app, no sign-up. Scan the QR code and you're in. English and German.
 ## How it works
 
 1. **Find your ingredient.** Eight quick questions tell you which part of a cocktail you are: Citrus, Spirit, Syrup or Fizz.
-2. **Pick your areas.** On the Wheel of Life, choose one or two areas where AI could help you most.
+2. **Pick your areas.** On the Wheel of Life, choose up to three areas where AI could help you most. Each one comes with a concrete idea of what AI could do there.
 3. **Mix your team.** Find two people with a different coaster color. Together you make a real drink, shown in its own glass and color.
 4. **Meet in the middle.** Compare your cards, find where your wheels meet and write one idea for something AI could build. The favorite ideas get built live on stage during the evening.
 
