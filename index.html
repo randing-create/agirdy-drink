@@ -330,7 +330,7 @@ en:{hall:"Machine Hall South",flow:"Schedule",start_h:"Which drink are you tonig
  qord:["First question","Second question","Third question","Fourth question","Fifth question","Sixth question","Seventh question","Last one"],
  mixing:"Shaking your drink…",mixing_team:"Mixing your drink…",ing_title:"Your kind of ingredient",drinks_title:"The twelve drinks",drinks_p:"Every team gets one of these. Two mixes can choose between two drinks. A handy list for the bar.",res_bar:"Your drink",redo:"Retake",res_k:"Tonight I'm",
  shot:"Screenshot the card for your story.",role:"Your role in a team",
- coaster:c=>`Grab a <b>${c}</b> coaster at the bar. That's how your teammates will spot you.`,coasterB:"Grab <b>any coaster you like</b> at the bar. Every team can use a Bartender.",bart_added:t=>`As your Bartender, you added ${t}. `,
+ coaster:c=>`Grab ${/^[aeiou]/i.test(c)?"an":"a"} <b>${c}</b> coaster at the bar. That's how your teammates will spot you.`,coasterB:"Grab <b>any coaster you like</b> at the bar. Every team can use a Bartender.",bart_added:t=>`As your Bartender, you added ${t}. `,
  find_team:"Find your team",team_bar:"Your table",team_h:"Two people, a different color.",
  team_p:"Look at the coasters. Tap who's joining your table.",you:"You",open:"open",
  h0:"Two works too. Three is best.",h1:"Everyone's the same color. Find someone with a different ingredient.",
