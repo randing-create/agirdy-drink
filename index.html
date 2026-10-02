@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Which drink are you? · 2x40+1</title>
+<style>
+@font-face{font-family:"Big Shoulders Display";src:url(BigShouldersDisplay.ttf) format("truetype");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Source Serif 4";src:url(SourceSerif4.ttf) format("truetype");font-weight:200 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Source Serif 4";src:url(SourceSerif4-Italic.ttf) format("truetype");font-weight:200 900;font-style:italic;font-display:swap}
+:root{
+  --bg:#1B2631; --deep:#121A23; --ink:#F3ECDD; --muted:#9FAAB3; --brass:#C9A15B; --line:rgba(201,161,91,.32);
+  --row:rgba(243,236,221,.04); --glass:rgba(243,236,221,.62); --btn:#F3ECDD; --btnink:#1B2631; --cink:#1B2631;
+  --glow:rgba(201,161,91,.20);
+  --citrus:#F5C842; --spirit:#D4883A; --syrup:#D2416A; --fizz:#6FD3C9;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#ECEBE6; --deep:#1B2631; --ink:#1B2631; --muted:#5D6872; --brass:#94702F; --line:rgba(148,112,47,.38);
+    --row:rgba(27,38,49,.045); --glass:rgba(27,38,49,.5); --btn:#1B2631; --btnink:#F3ECDD; --glow:rgba(201,161,91,.28);
+    --citrus:#EDBB24; --spirit:#C9772A; --syrup:#C7345D; --fizz:#3DB8AD;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B2631; --deep:#121A23; --ink:#F3ECDD; --muted:#9FAAB3; --brass:#C9A15B; --line:rgba(201,161,91,.32);
+  --row:rgba(243,236,221,.04); --glass:rgba(243,236,221,.62); --btn:#F3ECDD; --btnink:#1B2631; --glow:rgba(201,161,91,.20);
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:var(--serif);font-size:17.5px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(90% 420px at 50% -60px,var(--glow),transparent 75%),var(--bg);background-repeat:no-repeat;background-color:var(--bg)}
+.app{max-width:440px;margin:0 auto;padding:0 22px}
+.screen{display:none}
+.screen.on{display:flex;flex-direction:column;min-height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));animation:fade .35s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.grow{flex:1}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0 12px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.mark{font-family:var(--display);font-weight:900;font-size:22px;letter-spacing:.01em;white-space:nowrap}
+.mark small{font-family:var(--serif);font-weight:400;font-style:italic;font-size:14px;color:var(--muted);margin-left:8px;letter-spacing:0}
+.lnk{background:none;border:0;padding:10px 0;min-height:44px;color:var(--brass);font:inherit;font-size:15px;font-style:italic;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.lnk:hover{color:var(--ink)}
+.right{display:flex;align-items:center;gap:14px}
+.lang{display:flex;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font-family:var(--display);font-weight:800;font-size:14px;padding:6px 11px;min-height:32px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--brass);color:var(--bg)}
+.display{font-family:var(--display);font-weight:900;line-height:.92;margin:0}
+h1.display{font-size:clamp(54px,16vw,76px)}
+h2.display{font-size:clamp(36px,11vw,44px);line-height:.95;margin-bottom:12px}
+.kicker{font-style:italic;color:var(--muted);margin:0 0 4px}
+p{margin:0 0 14px}
+.muted{color:var(--muted)}
+.sm{font-size:15px}
+svg.glass{display:block;height:auto;overflow:visible}
+.pour{animation:pour .7s cubic-bezier(.2,.75,.25,1) both}
+@keyframes pour{from{transform:translateY(40px)}to{transform:none}}
+.wave{animation:wave 2.6s linear infinite}
+@keyframes wave{from{transform:translateX(0)}to{transform:translateX(-60px)}}
+.bubble{animation:rise var(--t,3s) ease-in infinite;animation-delay:var(--dl,0s);opacity:0}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.8}100%{transform:translateY(var(--d,-150px));opacity:0}}
+.ice{animation:bob 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes bob{50%{transform:translateY(3px) rotate(4deg)}}
+/* bottom action bar: thumb zone */
+.cta{position:sticky;bottom:0;margin:18px -22px 0;padding:14px 22px calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 32%);z-index:5}
+.btn{display:block;width:100%;min-height:56px;border:0;border-radius:999px;background:var(--btn);color:var(--btnink);font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.01em;padding:12px 20px 14px;cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn[disabled]{opacity:.3;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.cta .note{text-align:center;font-size:13px;font-style:italic;color:var(--muted);margin:10px 0 0}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+/* start */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:6px;margin:6px 0 18px}
+.lead{font-size:19px}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:18px 0 0}
+.meta div{padding:10px 0;font-size:14px;color:var(--muted)}
+.meta div+div{border-left:1px solid var(--line);padding-left:12px}
+.meta b{display:block;font-family:var(--display);font-weight:800;font-size:22px;color:var(--ink);line-height:1.1}
+/* quiz */
+.steps{display:flex;gap:5px;margin:0 0 20px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line);transition:background .3s}
+.steps i.done{background:var(--brass)}
+.steps i.now{background:var(--ink)}
+.qhead{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:end}
+.qnum{font-family:var(--display);font-weight:800;font-size:18px;color:var(--brass);margin-bottom:6px}
+.qtext{font-family:var(--display);font-weight:800;font-size:clamp(27px,8vw,32px);line-height:1.02;margin:0}
+.opts{margin-top:auto;padding-top:24px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.opt{display:grid;grid-template-columns:22px 1fr;gap:14px;align-items:center;width:100%;min-height:60px;text-align:left;background:var(--row);border:0;border-radius:16px;margin-top:8px;padding:14px 16px;color:var(--ink);font:inherit;font-size:18px;line-height:1.3;cursor:pointer;transition:background .15s,transform .12s}
+.opt:active{transform:scale(.98)}
+.opt .o{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--brass);transition:background .15s,box-shadow .15s,transform .25s}
+.opt.picked{background:rgba(201,161,91,.16)}
+.opt.picked .o{box-shadow:none;transform:scale(1.3)}
+.opts.locked .opt:not(.picked){opacity:.35}
+/* mixing */
+.mixing{flex:1;display:grid;place-items:center;text-align:center}
+.shaker{width:110px;height:auto;animation:shake .32s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:rotate(-14deg) translateY(0)}50%{transform:rotate(14deg) translateY(-8px)}}
+.mixing p{font-family:var(--display);font-weight:800;font-size:28px;margin-top:22px}
+/* story card */
+.story{position:relative;border-radius:24px;overflow:hidden;background:var(--deep);color:#F3ECDD;padding:22px 22px 18px;display:grid;gap:4px;
+  box-shadow:0 0 0 1px rgba(201,161,91,.35)}
+.story::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 55% at 50% 62%,var(--tc),transparent 70%);opacity:.38;pointer-events:none}
+.story>*{position:relative}
+.story .row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-style:italic;color:rgba(243,236,221,.7)}
+.story .row b{font-family:var(--display);font-style:normal;font-weight:900;font-size:18px;color:#F3ECDD}
+.story .k{font-style:italic;color:rgba(243,236,221,.75);margin:18px 0 0}
+.story .name{font-family:var(--display);font-weight:900;font-size:clamp(76px,25vw,112px);line-height:.82;margin:0;color:var(--tc)}
+.story .gl{display:flex;justify-content:center;margin:14px 0 6px}
+.story .recipe li{color:#F3ECDD}
+.story .recipe .lead-dots{border-color:rgba(201,161,91,.45)}
+.reveal .name{animation:stamp .7s cubic-bezier(.2,1.4,.4,1) .15s both}
+.reveal .gl{animation:fade .6s ease .45s both}
+@keyframes stamp{from{transform:scale(1.25);opacity:0}to{transform:none;opacity:1}}
+.shot{text-align:center;font-size:13px;font-style:italic;color:var(--muted);margin:10px 0 0}
+.recipe{list-style:none;margin:0;padding:0}
+.recipe li{display:flex;align-items:baseline;gap:8px;padding:3px 0}
+.recipe li .lead-dots{flex:1;border-bottom:1.5px dotted var(--line);transform:translateY(-4px)}
+.recipe .sw{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;transform:translateY(-1px)}
+.recipe .amt{font-family:var(--display);font-weight:800;font-size:20px}
+.section{border-top:1px solid var(--line);padding-top:14px;margin-top:20px}
+.section h3{font-family:var(--display);font-weight:800;font-size:22px;margin:0 0 6px}
+.coasterrow{display:grid;grid-template-columns:88px 1fr;gap:16px;align-items:center}
+.coasterrow svg{width:88px;height:88px}
+/* team */
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
+.chip{background:none;border:0;padding:0;cursor:pointer;display:grid;justify-items:center;min-height:44px}
+.chip svg{width:100%;max-width:84px;height:auto;transition:transform .2s}
+.chip:active svg{transform:scale(.92) rotate(-8deg)}
+.table{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:8px 0 18px}
+.seat{position:relative}
+.seat svg{width:62px;height:62px;display:block}
+.seat.empty{width:62px;height:62px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line);display:grid;place-items:center;color:var(--muted);font-size:13px;font-style:italic}
+.seat button{position:absolute;top:-8px;right:-8px;width:28px;height:28px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font-size:16px;line-height:28px;cursor:pointer;padding:0}
+.seatlbl{font-size:12px;font-style:italic;color:var(--muted);text-align:center;margin-top:3px}
+.hint{font-style:italic;color:var(--muted);min-height:1.5em;margin:10px 0 0}
+/* wheel */
+.wheelwrap{display:flex;justify-content:center;margin:4px 0}
+.wheel{width:100%;max-width:340px;height:auto}
+.seg path{fill:var(--row);stroke:var(--line);stroke-width:1.2;transition:fill .25s}
+.seg text{fill:var(--ink);font-family:var(--display);font-weight:800;font-size:16px;pointer-events:none;transition:fill .25s}
+.seg{cursor:pointer;outline:none}
+.seg:hover path{fill:rgba(201,161,91,.14)}
+.seg.on path{fill:var(--brass)}
+.seg.on text{fill:var(--bg)}
+.seg:focus-visible path{stroke:var(--brass);stroke-width:3}
+/* challenge */
+.pair{padding:12px 0;border-bottom:1px solid var(--line)}
+.pair b{font-family:var(--display);font-weight:800;font-size:22px;display:block;line-height:1.1;margin-bottom:4px}
+.pair span{font-style:italic;color:var(--muted);font-size:16px}
+.slip{margin-top:18px;background:var(--row);border-radius:14px;padding:14px 16px 10px;box-shadow:inset 0 0 0 1px var(--line)}
+.slip label{font-family:var(--display);font-weight:800;font-size:18px;color:var(--brass);display:block;margin-bottom:4px}
+textarea{width:100%;min-height:92px;border:0;background:transparent;color:var(--ink);font:inherit;font-size:18px;font-style:italic;resize:vertical;padding:0;outline:none;line-height:1.5}
+textarea::placeholder{color:var(--muted);opacity:.75}
+.count{text-align:right;font-size:13px;color:var(--muted)}
+/* done */
+.ticket{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin:16px 0}
+.ticket .t{font-family:var(--display);font-weight:800;font-size:20px;color:var(--brass)}
+.ticket p{font-style:italic;font-size:19px;margin:4px 0 0}
+/* flow */
+.tl{list-style:none;padding:0;margin:18px 0 0}
+.tl li{display:grid;grid-template-columns:90px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+.tl time{font-family:var(--display);font-weight:900;font-size:30px;line-height:1;color:var(--brass)}
+.tl time.w{font-size:22px}
+.tl b{font-family:var(--display);font-weight:800;font-size:21px;display:block;line-height:1.1;margin-bottom:4px}
+.tl p{margin:0;font-size:15.5px;color:var(--muted)}
+.needs{margin:6px 0 0;padding-left:18px}
+.needs li{margin:4px 0;font-size:16px}
+.ing{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;padding:8px 0}
+.ing svg{width:52px;height:52px}
+.ing b{font-family:var(--display);font-weight:800;font-size:20px;display:block;line-height:1}
+.ing span{font-size:15px;color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 14px 8px;border-radius:999px;background:var(--row);box-shadow:inset 0 0 0 1px var(--line);font-size:16px}
+.pill i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dmeta{text-align:center;font-style:italic;color:var(--muted);margin:6px 0 0;font-size:16px}
+.rise{animation:rise2 1.1s cubic-bezier(.25,.8,.3,1) .15s both}
+@keyframes rise2{from{transform:translateY(var(--h,150px))}to{transform:none}}
+.dl{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.dl svg{width:44px;height:auto}
+.dl b{font-family:var(--display);font-weight:800;font-size:19px;display:block;line-height:1.1}
+.dl span{font-size:14.5px;color:var(--muted)}
+.src{font-size:12.5px;font-style:italic;color:var(--muted);text-align:center;margin:6px 0 0}
+.story .ai{margin-top:10px;padding-top:10px;border-top:1px dotted rgba(201,161,91,.45);font-size:14px;color:rgba(243,236,221,.75);font-style:italic}
+.story .ai b{font-family:var(--display);font-style:normal;font-weight:800;font-size:18px;color:#F3ECDD;display:block}
+.mine{margin:0 0 4px;font-size:16px}
+.mine b{font-family:var(--display);font-weight:800;font-size:19px}
+.versions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-top:12px}
+.versions .vlbl{width:100%;text-align:center;font-size:14px;font-style:italic;color:var(--muted)}
+.versions button{border:0;border-radius:999px;padding:8px 16px;min-height:40px;background:var(--row);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font-family:var(--display);font-weight:800;font-size:17px;cursor:pointer}
+.versions button[aria-pressed="true"]{background:var(--brass);color:var(--bg);box-shadow:none}
+#tname .zh{display:block;font-family:"Songti SC","Noto Serif SC","Source Han Serif SC",serif;font-weight:600;font-size:26px;color:var(--brass);margin-top:10px;line-height:1}
+.foot{font-size:13px;font-style:italic;color:var(--muted);text-align:center;margin:26px 0 30px}
+@media (prefers-reduced-motion: reduce){
+  .rise,.pour,.wave,.bubble,.ice,.screen.on,.shaker,.reveal .name,.reveal .gl{animation:none}
+  .bubble{opacity:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section class="screen on" id="s-start">
+  <div class="bar"><span class="mark">2x40+1<small data-t="hall"></small></span>
+    <span class="right"><span class="lang" role="group" aria-label="Language"><button data-lang="en">EN</button><button data-lang="de">DE</button></span><button class="lnk" data-go="s-flow" data-t="flow"></button></span></div>
+  <div class="hero"><h1 class="display" data-t="start_h"></h1><div id="g-start"></div></div>
+  <p class="lead" data-t="start_p"></p>
+  <div class="meta"><div><b>8</b><span data-t="m_q"></span></div><div><b>4</b><span data-t="m_i"></span></div><div><b>3</b><span data-t="m_t"></span></div></div>
+  <div class="grow"></div>
+  <div class="cta"><button class="btn" id="startBtn" data-t="start_btn"></button></div>
+</section>
+
+<section class="screen" id="s-quiz">
+  <div class="bar"><span class="mark" id="qcount"></span><button class="lnk" id="backBtn" data-t="back"></button></div>
+  <div class="steps" id="steps"></div>
+  <div class="qhead"><div id="g-quiz"></div><div><div class="qnum" id="qnum"></div><h2 class="qtext" id="qtext"></h2></div></div>
+  <div class="opts" id="opts"></div>
+</section>
+
+<section class="screen" id="s-mixing">
+  <div class="mixing"><div>
+    <svg class="shaker" viewBox="0 0 100 180" aria-hidden="true">
+      <rect x="38" y="4" width="24" height="14" rx="5" fill="var(--brass)"/>
+      <path d="M30 22 L70 22 L66 46 L34 46 Z" fill="var(--brass)"/>
+      <path d="M26 50 L74 50 L64 172 Q63 176 59 176 L41 176 Q37 176 36 172 Z" fill="var(--glass)" fill-opacity=".9"/>
+      <rect x="24" y="46" width="52" height="7" rx="3" fill="var(--brass)"/>
+      <path d="M38 64 L42 160" stroke="#fff" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <p id="mixtext"></p></div></div>
+</section>
+
+<section class="screen" id="s-result">
+  <div class="bar"><span class="mark" data-t="res_bar"></span><button class="lnk" id="redoBtn" data-t="redo"></button></div>
+  <div class="story reveal" id="story">
+    <div class="row"><b>2x40+1</b><span>17.10.2026</span></div>
+    <p class="k" data-t="res_k"></p>
+    <p class="name" id="rname"></p>
+    <div class="gl" id="g-result"></div>
+    <ul class="recipe" id="rrecipe"></ul>
+    <div class="row" style="margin-top:10px"><span>AGIRDY</span><span>Maschinenhalle Süd</span></div>
+  </div>
+  <p class="shot" data-t="shot"></p>
+  <p style="font-size:19px;margin-top:18px" id="rdesc"></p>
+  <div class="section"><h3 data-t="ing_title"></h3><div class="pills" id="rpills"></div></div>
+  <div class="section"><h3 data-t="role"></h3><p class="muted" id="rteam" style="margin:0"></p></div>
+  <div class="section coasterrow"><div id="rcoaster"></div><p class="sm" style="margin:0" id="rcoasterp"></p></div>
+  <div class="cta"><button class="btn" id="toWheel" data-t="to_wheel"></button></div>
+</section>
+
+<section class="screen" id="s-team">
+  <div class="bar"><span class="mark" data-t="team_bar"></span><button class="lnk" data-go="s-result" data-t="back"></button></div>
+  <h2 class="display" data-t="team_h"></h2>
+  <p class="muted" data-t="team_p"></p>
+  <p class="mine" id="mine"></p>
+  <div class="table" id="table"></div>
+  <div class="chips" id="chips"></div>
+  <p class="hint" id="teamHint"></p>
+  <div class="grow"></div>
+  <div class="cta"><button class="btn" id="mixBtn" disabled data-t="mix_btn"></button></div>
+</section>
+
+<section class="screen" id="s-teamresult">
+  <div class="bar"><span class="mark" data-t="res_bar"></span><button class="lnk" data-go="s-team" data-t="change"></button></div>
+  <div style="display:flex;justify-content:center" id="g-team"></div>
+  <p class="kicker" style="text-align:center;margin-top:10px" data-t="tres_k"></p>
+  <p class="display" id="tname" style="text-align:center;font-size:clamp(58px,19vw,80px);line-height:.85"></p>
+  <p class="dmeta" id="tmeta"></p>
+  <div class="versions" id="versions"></div>
+  <p id="tdesc" style="text-align:center;font-size:19px;margin-top:12px"></p>
+  <div class="grow"></div>
+  <div class="cta"><button class="btn" data-go="s-challenge" data-t="to_ch"></button></div>
+</section>
+
+<section class="screen" id="s-areas">
+  <div class="bar"><span class="mark" data-t="wheel_bar"></span><button class="lnk" id="wheelBack" data-t="back"></button></div>
+  <h2 class="display" data-t="wheel_h"></h2>
+  <p class="muted" data-t="wheel_p"></p>
+  <div class="wheelwrap" id="wheel"></div>
+  <p class="src" data-t="wheel_src"></p>
+  <div class="grow"></div>
+  <div class="cta"><button class="btn" id="areasBtn" disabled></button></div>
+</section>
+
+<section class="screen" id="s-challenge">
+  <div class="bar"><span class="mark" data-t="ch_bar"></span><button class="lnk" data-go="s-teamresult" data-t="back"></button></div>
+  <h2 class="display" data-t="ch_h"></h2>
+  <p class="muted" data-t="ch_p"></p>
+  <div id="pairs"></div>
+  <div class="slip">
+    <label for="idea" data-t="order"></label>
+    <textarea id="idea" maxlength="140"></textarea>
+    <div class="count"><span id="ideaCount">0</span> / 140</div>
+  </div>
+  <div class="grow"></div>
+  <div class="cta"><button class="btn" id="submitBtn" disabled data-t="submit"></button></div>
+</section>
+
+<section class="screen" id="s-done">
+  <div class="bar"><span class="mark" data-t="done_bar"></span><button class="lnk" data-go="s-flow" data-t="flow"></button></div>
+  <div style="display:flex;justify-content:center" id="g-done"></div>
+  <h2 class="display" style="text-align:center;margin-top:16px" data-t="done_h"></h2>
+  <div class="ticket"><div class="t" id="dTeam"></div><p id="dIdea"></p></div>
+  <p data-th="done_p1"></p>
+  <p class="muted" data-t="done_p2"></p>
+  <div class="grow"></div>
+  <div class="cta"><button class="btn ghost" id="restartBtn" data-t="restart"></button></div>
+</section>
+
+<section class="screen" id="s-flow">
+  <div class="bar"><span class="mark"><span data-t="flow"></span><small data-t="flow_sub"></small></span>
+    <span class="right"><span class="lang" role="group" aria-label="Language"><button data-lang="en">EN</button><button data-lang="de">DE</button></span><button class="lnk" id="flowBack" data-t="back"></button></span></div>
+  <h2 class="display" data-t="flow_h"></h2>
+  <p class="muted" data-t="flow_p"></p>
+  <ol class="tl" id="tl"></ol>
+  <div class="section"><h3 data-t="needs"></h3><ul class="needs" id="needs"></ul></div>
+  <div class="section"><h3 data-t="ings"></h3><div id="flowTypes"></div></div>
+  <div class="section"><h3 data-t="drinks_title"></h3><p class="muted sm" data-t="drinks_p"></p><div id="drinkList"></div></div>
+  <p class="foot" data-t="foot"></p>
+</section>
+
+</div>
+<script>
+const UI={
+en:{hall:"Machine Hall South",flow:"Schedule",start_h:"Which drink are you tonight?",
+ start_p:"Eight questions, two minutes. Find out which ingredient you are, then find the two people who make the best drink of the night with you.",
+ m_q:"questions",m_i:"ingredients",m_t:"per team",start_btn:"Pour me in",version:"Two drinks fit your mix. Pick one:",to_wheel:"Where could AI help you?",mine:"Tell your team: AI could help me with",back:"Back",
+ qord:["First question","Second question","Third question","Fourth question","Fifth question","Sixth question","Seventh question","Last one"],
+ mixing:"Shaking your drink…",mixing_team:"Mixing your drink…",ing_title:"Your kind of ingredient",drinks_title:"The twelve drinks",drinks_p:"Every team gets one of these. Two mixes can choose between two drinks. A handy list for the bar.",res_bar:"Your drink",redo:"Retake",res_k:"Tonight I'm",
+ shot:"Screenshot the card for your story.",role:"Your role in a team",
+ coaster:c=>`Grab a <b>${c}</b> coaster at the bar. That's how your teammates will spot you.`,
+ find_team:"Find your team",team_bar:"Your table",team_h:"Two people, a different color.",
+ team_p:"Look at the coasters. Tap who's joining your table.",you:"You",open:"open",
+ h0:"Two works too. Three is best.",h1:"Everyone's the same color. Find someone with a different ingredient.",
+ h2:"Two works. A third makes the drink rounder.",h3:"Your drink is ready.",mix_btn:"Mix our drink",change:"Change",
+ tres_k:"Together you make a",to_ch:"On to the challenge",wheel_bar:"Wheel of Life",
+ wheel_h:"Where could AI help you most?",wheel_p:"Pick one or two areas of your life.",chosen:"chosen",
+ min1:"Pick at least one",wheel_go:"Mix my drink",wheel_src:"Adapted from the seven areas of Tony Robbins' Wheel of Life (Life by Design workbook), building on the classic wheel commonly attributed to Paul J. Meyer.",card_ai:"AI could help me with",ch_bar:"Your challenge",ch_h:"Where do your wheels meet?",
+ ch_p:"Show each other your cards. Pick an area you share, or combine two. Then write one idea for something AI could build.",order:"Your order",
+ ph:"An app that reminds us when we last called our grandparents.",ex:a=>`For example ${a}.`,
+ submit:"Submit idea",done_bar:"Submitted",done_h:"Your idea is in the running.",team:"Team",
+ done_p1:"<b>At 20:30</b> everyone votes by phone. The three favorite ideas get built live on stage with AI.",
+ done_p2:"Want to build it yourselves? Submit your own demo by Oct 24. Every demo goes into the gallery.",
+ restart:"Start over",flow_sub:"for Philipp and Jan",flow_h:"How the evening runs.",
+ flow_p:"The game hooks into your program. Nothing moves.",needs:"What's needed",ings:"The four ingredients",
+ foot:"Demo version. No data is stored.",
+ tl:[["Before","Prepare","QR codes on tables and at the bar. Coasters in four colors, about 20 each."],
+  ["17:30","Quiz and team","Scan, take the quiz, pick one or two life areas, grab a coaster, find two people with a different color. Anyone who'd rather not play just enjoys a drink."],
+  ["18:00","Welcome","One line is enough: “If you don't know your drink yet, scan the code.”"],
+  ["19:30","Idea over dinner","Teams compare their cards, find where their wheels meet and submit one idea in one sentence. Closes at 20:15."],
+  ["20:30","Live AI session","Five minutes of phone voting. The top 3 get built live, about eight minutes each, with the team on stage."],
+  ["22:00","Open party","The game is over. The gallery stays online."],
+  ["By Oct 24","After","Submit your own demos. Philipp and Jan crown the drink of the night."]],
+ needlist:["Your okay","QR stands and coasters in four colors","A word with the bar, ideally one signature drink per ingredient","A screen for voting and the live build","One person building live, one hosting"]},
+de:{hall:"Maschinenhalle Süd",flow:"Ablauf",start_h:"Welcher Drink bist du heute?",
+ start_p:"Acht Fragen, zwei Minuten. Danach weißt du, welche Zutat du bist, und findest die zwei Menschen, mit denen du den besten Drink des Abends ergibst.",
+ m_q:"Fragen",m_i:"Zutaten",m_t:"pro Team",start_btn:"Einschenken",version:"Zwei Drinks passen zu eurer Mischung. Wählt einen:",to_wheel:"Wo könnte KI dir helfen?",mine:"Erzähl deinem Team: KI könnte mir helfen bei",back:"Zurück",
+ qord:["Erste Frage","Zweite Frage","Dritte Frage","Vierte Frage","Fünfte Frage","Sechste Frage","Siebte Frage","Letzte Frage"],
+ mixing:"Dein Drink wird geschüttelt …",mixing_team:"Euer Drink wird gemixt …",ing_title:"Deine Zutaten an der Bar",drinks_title:"Die zwölf Drinks",drinks_p:"Jedes Team bekommt einen davon. Bei zwei Mischungen kann das Team zwischen zwei Drinks wählen. Eine Liste für die Bar.",res_bar:"Dein Drink",redo:"Nochmal",res_k:"Heute Abend bin ich",
+ shot:"Mach einen Screenshot für deine Story.",role:"Deine Rolle im Team",
+ coaster:c=>`Hol dir an der Bar den Untersetzer in <b>${c}</b>. Daran erkennen dich deine Teammitglieder.`,
+ find_team:"Team finden",team_bar:"Euer Tisch",team_h:"Zwei Leute, eine andere Farbe.",
+ team_p:"Schaut auf die Untersetzer. Tippt an, wer sich zu euch an den Tisch stellt.",you:"Du",open:"frei",
+ h0:"Zu zweit geht auch, zu dritt ist es am schönsten.",h1:"Alle dieselbe Farbe. Sucht noch jemanden mit einer anderen Zutat.",
+ h2:"Zu zweit passt. Eine dritte Person macht den Drink runder.",h3:"Euer Drink ist bereit.",mix_btn:"Unseren Drink mixen",change:"Ändern",
+ tres_k:"Zusammen seid ihr ein",to_ch:"Zur Challenge",wheel_bar:"Rad des Lebens",
+ wheel_h:"Wo könnte KI dir am meisten helfen?",wheel_p:"Wähl ein oder zwei Lebensbereiche.",chosen:"gewählt",
+ min1:"Mindestens einen wählen",wheel_go:"Meinen Drink mixen",wheel_src:"Angelehnt an die sieben Bereiche aus Tony Robbins' Wheel of Life (Workbook „Life by Design“), aufbauend auf dem klassischen Rad, das meist Paul J. Meyer zugeschrieben wird.",card_ai:"KI könnte mir helfen bei",ch_bar:"Eure Challenge",ch_h:"Wo treffen sich eure Räder?",
+ ch_p:"Zeigt euch eure Karten. Wählt einen Bereich, den ihr teilt, oder verbindet zwei. Dann schreibt eine Idee, was KI bauen könnte.",order:"Eure Bestellung",
+ ph:"Eine App, die uns erinnert, wann wir zuletzt mit den Großeltern telefoniert haben.",ex:a=>`Zum Beispiel ${a}.`,
+ submit:"Idee einreichen",done_bar:"Eingereicht",done_h:"Eure Idee ist im Rennen.",team:"Team",
+ done_p1:"<b>Um 20:30</b> stimmen alle per Handy ab. Die drei beliebtesten Ideen werden live auf der Bühne mit KI gebaut.",
+ done_p2:"Lust, selbst zu bauen? Reicht bis 24.10. eine eigene Demo ein. Alle Demos kommen in die Galerie.",
+ restart:"Von vorne",flow_sub:"für Philipp und Jan",flow_h:"So läuft der Abend.",
+ flow_p:"Das Spiel hängt sich an euer Programm. Kein Programmpunkt verschiebt sich.",needs:"Was gebraucht wird",ings:"Die vier Zutaten",
+ foot:"Demo-Version. Es werden keine Daten gespeichert.",
+ tl:[["Vorher","Vorbereiten","QR-Codes auf den Tischen und an der Bar. Untersetzer in vier Farben, je etwa 20."],
+  ["17:30","Test und Team","Scannen, Test machen, ein oder zwei Lebensbereiche wählen, Untersetzer holen, zwei Leute mit anderer Farbe finden. Wer nicht mitspielen will, trinkt einfach."],
+  ["18:00","Begrüßung","Ein Satz reicht: „Wer seinen Drink noch nicht kennt, scannt den Code.“"],
+  ["19:30","Idee beim Buffet","Teams vergleichen ihre Karten, finden, wo sich ihre Räder treffen, und reichen eine Idee in einem Satz ein. Schluss um 20:15."],
+  ["20:30","Live-KI-Session","Fünf Minuten Abstimmung per Handy. Die Top 3 werden live gebaut, je etwa acht Minuten, mit dem Team auf der Bühne."],
+  ["22:00","Open Party","Das Spiel ist vorbei. Die Galerie bleibt online."],
+  ["Bis 24.10.","Danach","Eigene Demos einreichen. Philipp und Jan küren den Drink des Abends."]],
+ needlist:["Euer Okay","QR-Aufsteller und Untersetzer in vier Farben","Absprache mit der Bar, gern ein Signature-Drink pro Zutat","Leinwand für Abstimmung und Live-Build","Eine Person, die live baut, eine, die moderiert"]}
+};
+const TYPES={
+ C:{name:"Citrus",c:"--citrus",ex:{en:["Lemon","Lime","Grapefruit","Orange"],de:["Zitrone","Limette","Grapefruit","Orange"]},
+  en:{color:"yellow",desc:"You cut through. You spot what's off before anyone else does, and you bring clarity to every mix.",team:"You test the idea: Is this really the problem? Will it actually work?"},
+  de:{color:"Gelb",desc:"Du schneidest durch. Du siehst, was nicht stimmt, bevor andere es merken, und bringst Klarheit in jede Mischung.",team:"Du prüfst die Idee: Ist das wirklich das Problem? Funktioniert das so?"}},
+ S:{name:"Spirit",c:"--spirit",ex:{en:["Gin","Rum","Tequila","Whisky","Vodka"],de:["Gin","Rum","Tequila","Whisky","Wodka"]},
+  en:{color:"amber",desc:"You're the base. Without you the drink would just be juice. You make sure an idea turns into something real.",team:"You keep the team on course and make sure something is finished at the end."},
+  de:{color:"Bernstein",desc:"Du bist die Basis. Ohne dich wäre der Drink nur Saft. Du sorgst dafür, dass aus einer Idee etwas wird.",team:"Du hältst das Team auf Kurs und sorgst dafür, dass am Ende etwas fertig ist."}},
+ Y:{name:"Syrup",c:"--syrup",ex:{en:["Sugar syrup","Honey","Agave","Grenadine"],de:["Zuckersirup","Honig","Agave","Grenadine"]},
+  en:{color:"berry red",desc:"You bring the warmth. You sense what people need and turn a good idea into one people love.",team:"You ask who you're building for and how it will feel to them."},
+  de:{color:"Beerenrot",desc:"Du bringst die Wärme. Du merkst, was Menschen brauchen, und machst aus einer guten Idee eine, die man mag.",team:"Du fragst, für wen ihr das baut und wie es sich für diese Menschen anfühlt."}},
+ F:{name:"Fizz",c:"--fizz",ex:{en:["Soda water","Tonic","Ginger beer","Prosecco"],de:["Soda","Tonic","Ginger Beer","Prosecco"]},
+  en:{color:"teal",desc:"You bring the bubbles. Your ideas come fast and sometimes from somewhere else entirely, and that's what makes the drink come alive.",team:"You bring the spark: the idea everyone laughs at first and then everyone wants."},
+  de:{color:"Türkis",desc:"Du bringst die Bläschen. Deine Ideen kommen schnell und manchmal von ganz woanders, und genau das macht den Drink lebendig.",team:"Du lieferst den Funken: die Idee, über die erst alle lachen und die dann alle wollen."}}
+};
+const ORDER=["C","S","Y","F"];
+const Q={
+en:[["You arrive at a party where you barely know anyone. You…",{C:"watch who's talking to whom first",S:"grab a drink and find a good spot",Y:"talk to the first person standing alone",F:"wonder what happens if you just start dancing"}],
+ ["A new AI tool comes out. You…",{C:"read up on how it works",S:"check whether it actually saves you time",Y:"ask friends what they use it for",F:"try the wildest idea right away"}],
+ ["On a team, you're usually the one who…",{C:"asks the right questions",S:"makes sure it gets done",Y:"notices how everyone's doing",F:"has the idea everyone laughs at first"}],
+ ["Which line sounds most like you?",{C:"“Wait, is that even true?”",S:"“Okay, who does what by when?”",Y:"“What does this mean for people?”",F:"“What if we did it completely differently?”"}],
+ ["Your ideal weekend:",{C:"a great documentary that finally explains everything",S:"finally finishing that side project",Y:"a long dinner with friends",F:"a spontaneous trip with no plan"}],
+ ["Facing a tough decision, you trust…",{C:"numbers and facts",S:"experience: what has worked before?",Y:"your sense of people",F:"whichever option is most exciting"}],
+ ["You're asked to give a speech on the spot. You…",{C:"pull together the key facts",S:"build a clear three-point structure",Y:"tell a personal story",F:"improvise and see where it goes"}],
+ ["In ten years, AI will mostly…",{C:"be more accurate than we are",S:"take the boring work off our hands",Y:"change how we relate to each other",F:"make things possible we can't imagine yet"}]],
+de:[["Du kommst auf eine Party, auf der du kaum jemanden kennst. Du …",{C:"beobachtest erst mal, wer mit wem redet",S:"holst dir einen Drink und suchst einen guten Platz",Y:"sprichst die erste Person an, die allein steht",F:"überlegst, was passiert, wenn du einfach mittanzt"}],
+ ["Ein neues KI-Tool kommt raus. Du …",{C:"liest erst mal, wie es funktioniert",S:"testest, ob es dir im Alltag Zeit spart",Y:"fragst Freunde, was sie damit machen",F:"probierst sofort die verrückteste Idee aus"}],
+ ["Im Team bist du meistens die Person, die …",{C:"die richtigen Fragen stellt",S:"dafür sorgt, dass es fertig wird",Y:"merkt, wie es allen geht",F:"die Idee hat, über die erst alle lachen"}],
+ ["Welcher Satz klingt am meisten nach dir?",{C:"„Moment, stimmt das überhaupt?“",S:"„Okay, wer macht was bis wann?“",Y:"„Was bedeutet das für die Menschen?“",F:"„Und wenn wir es ganz anders machen?“"}],
+ ["Dein ideales Wochenende:",{C:"eine gute Doku, die endlich alles erklärt",S:"endlich das liegengebliebene Projekt fertigmachen",Y:"ein langes Essen mit Freunden",F:"ein spontaner Trip ohne Plan"}],
+ ["Bei einer schwierigen Entscheidung vertraust du …",{C:"Zahlen und Fakten",S:"deiner Erfahrung: Was hat schon mal funktioniert?",Y:"deinem Gefühl für Menschen",F:"der Option, die am spannendsten ist"}],
+ ["Du sollst spontan eine Rede halten. Du …",{C:"sammelst schnell die wichtigsten Fakten",S:"baust dir eine klare Struktur mit drei Punkten",Y:"erzählst eine persönliche Geschichte",F:"improvisierst und schaust, wohin es führt"}],
+ ["In zehn Jahren wird KI vor allem …",{C:"genauer sein als wir",S:"uns die langweilige Arbeit abnehmen",Y:"verändern, wie wir miteinander umgehen",F:"Dinge möglich machen, die wir uns heute nicht vorstellen können"}]]
+};
+const GN={en:{coupe:"Coupe",rocks:"Rocks glass",highball:"Highball",balloon:"Balloon glass",flute:"Flute",wine:"Wine glass"},
+          de:{coupe:"Coupette",rocks:"Tumbler",highball:"Longdrinkglas",balloon:"Ballonglas",flute:"Sektflöte",wine:"Weinglas"}};
+const DRINKS={
+ CS:{name:"Gimlet",glass:"coupe",color:"#D6E4AE",gar:"lime",
+  en:["Gin, lime cordial","Clear and strong. You get an idea to the point and see it through."],
+  de:["Gin, Limetten-Cordial","Klar und stark. Ihr bringt eine Idee auf den Punkt und zieht sie durch."]},
+ CY:{name:"Lemonade",glass:"highball",color:"#F3E388",gar:"lemon",ice:1,
+  en:["Lemon, sugar syrup, water (alcohol-free)","Fresh and friendly. You ask hard questions and keep people in mind."],
+  de:["Zitrone, Zuckersirup, Wasser (alkoholfrei)","Frisch und freundlich. Ihr fragt kritisch und denkt dabei an die Menschen."]},
+ CF:{name:"Lime & Soda",glass:"highball",color:"#E2F0D0",gar:"lime",ice:1,fizz:1,
+  en:["Fresh lime, soda water (alcohol-free)","Sparkling with bite. Wild ideas that still survive a reality check."],
+  de:["Frische Limette, Soda (alkoholfrei)","Spritzig mit Biss. Wilde Ideen, die trotzdem jedem Check standhalten."]},
+ SY:{name:"Old Fashioned",glass:"rocks",color:"#B0601C",gar:"peel",ice:1,
+  en:["Whisky, sugar, bitters","A classic. You build something solid that people love to use."],
+  de:["Whisky, Zucker, Bitters","Ein Klassiker. Ihr baut etwas Solides, das Menschen gerne benutzen."]},
+ SF:{name:"Gin & Tonic",glass:"balloon",color:"#E6F2F0",gar:"lime",ice:1,fizz:1,
+  en:["Gin, tonic water","Quick to mix, instant effect. You have the idea and build it right away."],
+  de:["Gin, Tonic Water","Schnell gemixt, sofort wirksam. Ihr habt die Idee und setzt sie gleich um."]},
+ YF:{name:"Kir Royal",glass:"flute",color:"#8C2240",fizz:1,
+  en:["Crème de cassis, champagne","Festive. You build something beautiful people want to share."],
+  de:["Crème de Cassis, Champagner","Festlich. Ihr baut etwas Schönes, das man gern teilt."]},
+ CSY:{name:"Margarita",glass:"coupe",color:"#DCE38A",gar:"lime",salt:1,
+  en:["Tequila, lime, agave syrup","The perfect balance of sour, strong and sweet. You have everything it takes to build something real."],
+  de:["Tequila, Limette, Agavensirup","Die perfekte Balance aus sauer, stark und süß. Ihr habt alles, um etwas Richtiges zu bauen."]},
+ CSF:{name:"Paloma",glass:"highball",color:"#F3B2A4",gar:"grapefruit",ice:1,fizz:1,
+  en:["Tequila, grapefruit, lime, soda","Tall, bright, sparkling. Good ideas, tested and reliably delivered."],
+  de:["Tequila, Grapefruit, Limette, Soda","Groß, hell, prickelnd. Gute Ideen, kritisch geprüft und zuverlässig umgesetzt."]},
+ CYF:{name:"Virgin Mojito",glass:"highball",color:"#D2EAB4",gar:"mint",ice:1,fizz:1,
+  en:["Lime, mint, sugar syrup, soda (alcohol-free)","Fresh, sweet and fizzy. Lots of heart, lots of ideas, and someone who says which ones hold up."],
+  de:["Limette, Minze, Zuckersirup, Soda (alkoholfrei)","Frisch, süß und sprudelnd. Viel Herz, viele Ideen, und jemand sagt, was davon trägt."]},
+ SYF:{name:"Aperol Spritz",glass:"wine",color:"#EF661D",gar:"orange",ice:1,fizz:1,
+  en:["Aperol, prosecco, soda","Light and social. You invent things that bring people together."],
+  de:["Aperol, Prosecco, Soda","Leicht und gesellig. Ihr erfindet Dinge, die Menschen zusammenbringen."]}
+};
+Object.assign(DRINKS,{
+ EM:{name:"Espresso Martini",glass:"coupe",color:"#3A2216",foam:"#C8A27C",gar:"beans",
+  en:["Vodka, coffee liqueur, espresso, sugar syrup","Strong, smooth, wide awake. You keep the energy up and get things moving."],
+  de:["Wodka, Kaffeelikör, Espresso, Zuckersirup","Stark, samtig, hellwach. Ihr haltet die Energie hoch und bringt Dinge ins Rollen."]},
+ OS:{name:"Osmanthus Oolong",zh:"桂花乌龙",glass:"highball",color:"#D49A4E",gar:"osmanthus",ice:1,fizz:1,
+  en:["Gin or baijiu, cold oolong tea, osmanthus syrup, soda","Tea-gold and fragrant, with a story from far away. You build bridges between worlds."],
+  de:["Gin oder Baijiu, kalter Oolong-Tee, Osmanthus-Sirup, Soda","Teegolden und duftend, mit einer Geschichte von weit her. Ihr baut Brücken zwischen Welten."]}
+});
+const ALT={SY:"EM",SYF:"OS"};
+const COMBO={EM:"SY",OS:"SYF"};
+const GL={
+ coupe:{clip:"M44 64 L196 64 Q196 136 120 141 Q44 136 44 64 Z",out:"M40 60 Q40 140 120 145 Q200 140 200 60",stem:[145,252],top:76,bot:141,rim:[40,200,60]},
+ rocks:{clip:"M51 126 L189 126 L182 258 L58 258 Z",out:"M45 120 L195 120 L188 266 Q187 276 177 276 L63 276 Q53 276 52 266 Z",base:"M58 258 L182 258",top:152,bot:258,rim:[45,195,120]},
+ highball:{clip:"M77 36 L163 36 L159 258 L81 258 Z",out:"M71 30 L169 30 L164 268 Q163 280 152 280 L88 280 Q77 280 76 268 Z",base:"M81 258 L159 258",top:64,bot:258,rim:[71,169,30]},
+ balloon:{clip:"M66 44 L174 44 C192 110 180 182 120 182 C60 182 48 110 66 44 Z",out:"M62 40 C42 110 55 188 120 188 C185 188 198 110 178 40",stem:[188,252],top:98,bot:182,rim:[62,178,40]},
+ flute:{clip:"M99 30 L141 30 C143 90 140 155 120 168 C100 155 97 90 99 30 Z",out:"M95 25 C92 90 96 160 120 175 C144 160 148 90 145 25",stem:[175,252],top:46,bot:168,rim:[95,145,25]},
+ wine:{clip:"M74 44 L166 44 C172 110 165 165 120 166 C75 165 68 110 74 44 Z",out:"M70 40 C62 110 70 170 120 172 C170 170 178 110 170 40",stem:[172,252],top:86,bot:166,rim:[70,170,40]}
+};
+function wheelG(x,y,fill){let s="";for(let k=0;k<8;k++){const a=k*Math.PI/4;s+=`<line x1="${x}" y1="${y}" x2="${(x+15*Math.cos(a)).toFixed(1)}" y2="${(y+15*Math.sin(a)).toFixed(1)}"/>`;}
+  return `<circle cx="${x}" cy="${y}" r="21" fill="${fill}"/><circle cx="${x}" cy="${y}" r="17" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2.5"/><g stroke="rgba(255,255,255,.8)" stroke-width="1.8">${s}</g>`;}
+function drink(key,o={}){
+  const D=DRINKS[key],G=GL[D.glass],id="d"+(++uid),st="var(--glass)",[rl,rr,ry]=G.rim;
+  let liq=`<rect x="0" y="${G.top+6}" width="240" height="${G.bot-G.top+10}" fill="${D.color}"/>
+    <g transform="translate(0 ${G.top})"><path class="wave" fill="${D.color}" d="M-120 0 q15 -3 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 L360 12 L-120 12 Z"/></g>`;
+  if(D.foam) liq+=`<rect x="0" y="${G.top-3}" width="240" height="13" fill="${D.foam}"/>`;
+  if(D.gar==="osmanthus"){[[0,6],[1,18],[2,4],[3,30],[4,12],[5,44],[6,24],[7,58]].forEach(([k,dy])=>{const x=rl+22+((k*23)%(rr-rl-44));liq+=`<g fill="#E8962A"><circle cx="${x}" cy="${G.top+dy}" r="2.6"/><circle cx="${x+4}" cy="${G.top+dy+1}" r="2.2"/><circle cx="${x+2}" cy="${G.top+dy-3}" r="2.2"/></g>`;});}
+  if(D.fizz){for(let k=0;k<9;k++){liq+=`<circle class="bubble" cx="${rl+18+((k*29)%(rr-rl-36))}" cy="${G.bot-6}" r="${1.3+(k%3)*.7}" fill="rgba(255,255,255,.85)" style="--d:${-(G.bot-G.top-8)}px;--t:${2.2+(k%4)*.5}s;--dl:${k*.35}s"/>`;}}
+  if(D.ice){
+    if(D.glass==="rocks") liq+=`<rect x="88" y="${G.top-12}" width="64" height="60" rx="9" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.6)" stroke-width="1.8" transform="rotate(-6 120 ${G.top+18})"/>`;
+    else{const cx=(rl+rr)/2;[[cx-24,G.top-6,-12],[cx+6,G.top+2,9],[cx-12,G.top+34,4]].forEach(([x,y,r])=>{liq+=`<rect class="ice" x="${x-16}" y="${y}" width="32" height="30" rx="6" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.55)" stroke-width="1.5" transform="rotate(${r} ${x} ${y+15})"/>`;});}
+  }
+  const inner=o.pour?`<g class="rise" style="--h:${G.bot-G.top+20}px">${liq}</g>`:liq;
+  let stem="";
+  if(G.stem) stem=`<path d="M120 ${G.stem[0]} L120 ${G.stem[1]}" stroke="${st}" stroke-width="4.5" stroke-linecap="round"/><ellipse cx="120" cy="${G.stem[1]+6}" rx="40" ry="7" fill="${st}" fill-opacity=".1" stroke="${st}" stroke-width="4"/>`;
+  let rimx="";
+  if(D.salt){for(let x=rl+4;x<=rr-4;x+=7) rimx+=`<circle cx="${x}" cy="${ry+1+(x%3)}" r="2.2" fill="#fff" opacity=".9"/>`;}
+  let gar="";
+  if(D.gar==="lime") gar=wheelG(rr-4,ry-2,"#8DBF3A");
+  if(D.gar==="beans"){const cx=(rl+rr)/2,y=G.top+2;gar=[-16,0,16].map((d,i)=>`<g transform="rotate(${[-20,10,-5][i]} ${cx+d} ${y-(i===1?3:0)})"><ellipse cx="${cx+d}" cy="${y-(i===1?3:0)}" rx="6" ry="8.5" fill="#24130A"/><path d="M${cx+d} ${y-8-(i===1?3:0)} q-2 8 0 16" stroke="#6B4A33" stroke-width="1.4" fill="none"/></g>`).join("");}
+  if(D.gar==="osmanthus") gar=`<g fill="#E8962A">${[[rr-10,ry-6],[rr-2,ry-12],[rr+4,ry-4],[rr-16,ry-14]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.4"/>`).join("")}</g><path d="M${rr-30} ${ry+2} q14 -22 34 -26" stroke="#5E7F3A" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  if(D.gar==="lemon") gar=wheelG(rr-4,ry-2,"#F2CC2E");
+  if(D.gar==="orange") gar=wheelG(rr-4,ry-2,"#F08A24");
+  if(D.gar==="grapefruit") gar=`<path d="M${rr-26} ${ry} A22 22 0 0 0 ${rr+18} ${ry} Z" fill="#E86A6A" stroke="rgba(255,255,255,.85)" stroke-width="2.5" transform="rotate(-25 ${rr-4} ${ry})"/>`;
+  if(D.gar==="peel") gar=`<path d="M${rr-58} ${ry+6} q18 -26 50 -14 q10 4 14 14" fill="none" stroke="#F08A24" stroke-width="7" stroke-linecap="round"/>`;
+  if(D.gar==="mint") gar=`<g fill="#4FA34A"><ellipse cx="${rl+30}" cy="${ry-14}" rx="9" ry="17" transform="rotate(-25 ${rl+30} ${ry-14})"/><ellipse cx="${rl+46}" cy="${ry-20}" rx="8" ry="15" transform="rotate(20 ${rl+46} ${ry-20})"/><ellipse cx="${rl+38}" cy="${ry-30}" rx="7" ry="13"/></g>`+wheelG(rr-4,ry-2,"#8DBF3A");
+  return `<svg class="glass" style="width:${o.w||120}px" viewBox="0 0 240 300" role="img" aria-label="${D.name}">
+   <defs><clipPath id="c${id}"><path d="${G.clip}"/></clipPath>
+   <linearGradient id="sh${id}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient></defs>
+   <path d="${G.clip}" fill="${st}" fill-opacity=".07"/>
+   <g clip-path="url(#c${id})">${inner}<rect x="0" y="0" width="240" height="300" fill="url(#sh${id})"/></g>
+   <path d="${G.out}" fill="none" stroke="${st}" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
+   ${G.base?`<path d="${G.base}" stroke="${st}" stroke-width="2" opacity=".5"/>`:""}${stem}${rimx}${gar}</svg>`;
+}
+const comboKey=()=>{const all=[S.me,...S.mates];return ORDER.filter(k=>all.includes(k)).join("");};
+const drinkKey=()=>S.pick||comboKey();
+const AREAS=[
+ ["body",{en:["Health","a break reminder that doesn't nag"],de:["Gesundheit","eine Pausen-Erinnerung, die nicht nervt"]}],
+ ["emotions",{en:["Emotions","a one-minute evening check-in that asks how your day really was"],de:["Emotionen","ein Ein-Minuten-Check-in am Abend, der fragt, wie dein Tag wirklich war"]}],
+ ["relationships",{en:["Relationships","a nudge to call friends and family you haven't spoken to in a while"],de:["Beziehungen","ein Anstoß, Freunde und Familie anzurufen, von denen man lange nichts gehört hat"]}],
+ ["time",{en:["Time","an assistant that turns a messy week into a realistic plan"],de:["Zeit","ein Assistent, der eine chaotische Woche in einen realistischen Plan verwandelt"]}],
+ ["career",{en:["Mission","a sparring partner that sharpens your next big idea"],de:["Mission","ein Sparringspartner, der deine nächste große Idee schärft"]}],
+ ["finances",{en:["Finances","a calculator that shows where the money actually goes"],de:["Finanzen","ein Rechner, der zeigt, wohin das Geld eigentlich geht"]}],
+ ["celebrate",{en:["Joy","a random generator for weekend adventures"],de:["Freude","ein Zufallsgenerator für Wochenend-Abenteuer"]}]
+];
+const S={lang:"en",answers:[],me:null,mates:[],areas:[],team:null};
+const $=id=>document.getElementById(id);
+const L=()=>UI[S.lang];
+const byOrder=a=>[...a].sort((x,y)=>ORDER.indexOf(x)-ORDER.indexOf(y));
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(10)}catch(e){}};
+const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let uid=0;
+
+/* ---------- drawing ---------- */
+function glass(layers,slots,o={}){
+  const id="g"+(++uid),B=258,H=216,unit=H/slots,n=layers.length,top=B-n*unit;
+  let liq="";
+  layers.forEach((t,i)=>{
+    const y=B-(i+1)*unit,col=`var(${TYPES[t].c})`;
+    if(i<n-1){liq+=`<rect x="0" y="${y}" width="240" height="${unit+1}" fill="${col}"/>`;}
+    else{liq+=`<g class="${o.pour?'pour':''}"><rect x="0" y="${y+8}" width="240" height="${unit-7}" fill="${col}"/><g transform="translate(0 ${y})"><path class="wave" fill="${col}" d="M-120 0 q15 -4 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 L360 14 L-120 14 Z"/></g></g>`;}
+  });
+  if(n){
+    liq+=`<rect x="0" y="${top}" width="240" height="${B-top}" fill="url(#sh${id})"/>`;
+    for(let k=0;k<7;k++){liq+=`<circle class="bubble" cx="${62+((k*37)%118)}" cy="${B-6}" r="${1.4+(k%3)*.8}" fill="rgba(255,255,255,.75)" style="--d:${-(B-top-10)}px;--t:${2.4+(k%4)*.5}s;--dl:${k*.45}s"/>`;}
+    if(o.ice){liq+=`<rect class="ice" x="78" y="${top-6}" width="38" height="36" rx="7" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.55)" stroke-width="1.5" transform="rotate(-12 97 ${top+12})"/><rect class="ice" style="animation-delay:-2s" x="124" y="${top-2}" width="34" height="32" rx="7" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.5)" stroke-width="1.5" transform="rotate(10 141 ${top+14})"/>`;}
+  }
+  let gar="";
+  if(o.garnish){let s="";for(let k=0;k<8;k++){const a=k*Math.PI/4;s+=`<line x1="200" y1="26" x2="${(200+17*Math.cos(a)).toFixed(1)}" y2="${(26+17*Math.sin(a)).toFixed(1)}"/>`;}
+    gar=`<circle cx="200" cy="26" r="24" fill="var(--citrus)"/><circle cx="200" cy="26" r="19" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="2.5"/><g stroke="rgba(255,255,255,.75)" stroke-width="2">${s}</g>`;}
+  const st=o.stroke||"var(--glass)";
+  return `<svg class="glass" style="width:${o.w||120}px" viewBox="0 0 240 300" role="img" aria-label="Glass">
+   <defs><clipPath id="c${id}"><path d="M37 24 L203 24 L191 262 L49 262 Z"/></clipPath>
+   <linearGradient id="sh${id}" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient></defs>
+   <path d="M30 18 L210 18 L197 270 Q196 284 182 284 L58 284 Q44 284 43 270 Z" fill="${st}" fill-opacity=".07"/>
+   <g clip-path="url(#c${id})">${liq}</g>
+   <path d="M30 18 L210 18 L197 270 Q196 284 182 284 L58 284 Q44 284 43 270 Z" fill="none" stroke="${st}" stroke-width="4.5" stroke-linejoin="round"/>
+   <path d="M49 262 L191 262" stroke="${st}" stroke-width="2" opacity=".5"/>
+   <path d="M55 44 L66 236" stroke="#fff" stroke-opacity=".35" stroke-width="5" stroke-linecap="round"/>${gar}</svg>`;
+}
+function coaster(t){
+  const id="r"+(++uid),T=TYPES[t];
+  return `<svg viewBox="0 0 120 120" role="img" aria-label="${T.name}">
+   <defs><path id="${id}" d="M60 60 m-49 0 a49 49 0 1 1 98 0 a49 49 0 1 1 -98 0"/></defs>
+   <circle cx="60" cy="60" r="58" fill="var(${T.c})"/>
+   <circle cx="60" cy="60" r="41" fill="none" stroke="var(--cink)" stroke-opacity=".28" stroke-width="1.2"/>
+   <text font-family="Source Serif 4, Georgia, serif" font-size="7.2" letter-spacing="1.1" fill="var(--cink)" fill-opacity=".7"><textPath href="#${id}">2x40+1 · AGIRDY · MASCHINENHALLE SÜD · 17.10.2026 · </textPath></text>
+   <text x="60" y="68" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="25" fill="var(--cink)">${T.name}</text></svg>`;
+}
+
+/* ---------- language ---------- */
+function applyLang(){
+  document.documentElement.lang=S.lang;
+  document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=L()[el.dataset.t];});
+  document.querySelectorAll("[data-th]").forEach(el=>{el.innerHTML=L()[el.dataset.th];});
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
+  $("idea").placeholder=L().ph;
+  $("tl").innerHTML=L().tl.map(([t,b,p])=>`<li><time class="${t.length>5?'w':''}">${t}</time><div><b>${b}</b><p>${p}</p></div></li>`).join("");
+  $("needs").innerHTML=L().needlist.map(x=>`<li>${x}</li>`).join("");
+  $("flowTypes").innerHTML=ORDER.map(k=>`<div class="ing">${coaster(k)}<div><b>${TYPES[k].name}</b><span>${TYPES[k][S.lang].team}</span></div></div>`).join("");
+  $("drinkList").innerHTML=Object.keys(DRINKS).map(k=>{const D=DRINKS[k];return `<div class="dl">${drink(k,{w:44})}<div><b>${D.name}</b><span>${(COMBO[k]||k).split("").map(t=>TYPES[t].name).join(" + ")}. ${GN[S.lang][D.glass]}: ${D[S.lang][0]}</span></div></div>`;}).join("");
+  if(S.me) fillResult(false);
+  if(S.team) fillTeamResult(false);
+  if(S.areas&&S.areas.length) buildChallenge();
+}
+document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{S.lang=b.dataset.lang;applyLang();});
+
+/* ---------- navigation ---------- */
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));$(id).classList.add("on");window.scrollTo(0,0);}
+let lastScreen="s-start";
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]");if(!g)return;
+  const cur=document.querySelector(".screen.on").id;
+  if(g.dataset.go==="s-flow")lastScreen=cur;
+  if(g.dataset.go==="s-team")renderTeam();
+  if(g.dataset.go==="s-challenge")buildChallenge();
+  buzz();show(g.dataset.go);
+});
+$("flowBack").onclick=()=>show(lastScreen);
+
+/* ---------- quiz ---------- */
+function order(i){const a=[...ORDER];let s=i*7919+13;for(let k=a.length-1;k>0;k--){s=(s*9301+49297)%233280;const j=Math.floor(s/233280*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+function renderQuiz(pour){
+  const i=S.answers.length,qs=Q[S.lang];
+  if(i>=qs.length){mix();return;}
+  $("qcount").textContent=`${i+1} / ${qs.length}`;
+  $("qnum").textContent=L().qord[i];
+  $("backBtn").style.visibility=i?"visible":"hidden";
+  $("steps").innerHTML=qs.map((_,k)=>`<i class="${k<i?'done':k===i?'now':''}"></i>`).join("");
+  $("qtext").textContent=qs[i][0];
+  $("g-quiz").innerHTML=glass(S.answers,qs.length,{w:92,pour});
+  const box=$("opts");box.innerHTML="";box.classList.remove("locked");
+  order(i).forEach(k=>{
+    const b=document.createElement("button");b.className="opt";
+    b.innerHTML=`<span class="o"></span><span></span>`;b.lastChild.textContent=qs[i][1][k];
+    b.onclick=()=>{
+      if(box.classList.contains("locked"))return;
+      buzz();box.classList.add("locked");b.classList.add("picked");
+      b.querySelector(".o").style.background=`var(${TYPES[k].c})`;
+      setTimeout(()=>{S.answers.push(k);renderQuiz(true);},calm?120:360);
+    };
+    box.appendChild(b);
+  });
+}
+$("startBtn").onclick=()=>{buzz();S.answers=[];renderQuiz();show("s-quiz");};
+$("backBtn").onclick=()=>{S.answers.pop();renderQuiz();};
+$("wheelBack").onclick=()=>show("s-result");
+$("redoBtn").onclick=()=>{Object.assign(S,{answers:[],me:null,mates:[],areas:[],team:null});renderQuiz();show("s-quiz");};
+
+function mix(){
+  const c={C:0,S:0,Y:0,F:0};S.answers.forEach(a=>c[a]++);
+  const max=Math.max(...Object.values(c)),tied=ORDER.filter(k=>c[k]===max);
+  let me=tied[0];for(let i=S.answers.length-1;i>=0;i--){if(tied.includes(S.answers[i])){me=S.answers[i];break;}}
+  S.me=me;S.counts=c;
+  $("mixtext").textContent=L().mixing;show("s-mixing");
+  setTimeout(()=>{fillResult(true);show("s-result");try{navigator.vibrate&&navigator.vibrate([20,40,30])}catch(e){}},calm?300:1500);
+}
+function fillResult(anim){
+  const T=TYPES[S.me],c=S.counts,story=$("story");
+  story.style.setProperty("--tc",`var(${T.c})`);
+  if(anim){story.classList.remove("reveal");void story.offsetWidth;story.classList.add("reveal");}
+  $("rname").textContent=T.name;
+  $("g-result").innerHTML=glass(byOrder(S.answers),8,{w:150,ice:true,stroke:"rgba(243,236,221,.7)"});
+  $("rrecipe").innerHTML=ORDER.filter(k=>c[k]).sort((a,b)=>c[b]-c[a]).map(k=>
+    `<li><span><span class="sw" style="background:var(${TYPES[k].c})"></span>${TYPES[k].name}</span><span class="lead-dots"></span><span class="amt">${c[k]} cl</span></li>`).join("");
+  $("rdesc").textContent=T[S.lang].desc;
+  $("rpills").innerHTML=T.ex[S.lang].map(x=>`<span class="pill"><i style="background:var(${T.c})"></i>${x}</span>`).join("");$("rteam").textContent=T[S.lang].team;
+  $("rcoaster").innerHTML=coaster(S.me);$("rcoasterp").innerHTML=L().coaster(T[S.lang].color);
+}
+
+/* ---------- team ---------- */
+function renderTeam(){
+  $("mine").innerHTML=`${L().mine} <b>${AREAS.filter(a=>(S.areas||[]).includes(a[0])).map(a=>a[1][S.lang][0]).join(" + ")}</b>`;
+  const seats=[`<div><div class="seat">${coaster(S.me)}</div><div class="seatlbl">${L().you}</div></div>`];
+  S.mates.forEach((k,i)=>seats.push(`<div><div class="seat">${coaster(k)}<button aria-label="Remove ${TYPES[k].name}" data-rm="${i}">×</button></div><div class="seatlbl">${TYPES[k].name}</div></div>`));
+  for(let i=S.mates.length;i<2;i++)seats.push(`<div><div class="seat empty">${L().open}</div></div>`);
+  $("table").innerHTML=seats.join("");
+  $("table").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{buzz();S.mates.splice(+b.dataset.rm,1);renderTeam();});
+  $("chips").innerHTML="";
+  ORDER.forEach(k=>{
+    const b=document.createElement("button");b.className="chip";b.innerHTML=coaster(k);b.setAttribute("aria-label","Add "+TYPES[k].name);
+    b.onclick=()=>{if(S.mates.length<2){buzz();S.mates.push(k);renderTeam();}};
+    $("chips").appendChild(b);
+  });
+  const d=new Set([S.me,...S.mates]).size;
+  $("teamHint").textContent=!S.mates.length?L().h0:d===1?L().h1:S.mates.length===1?L().h2:L().h3;
+  $("mixBtn").disabled=!(S.mates.length&&d>=2);
+}
+function fillTeamResult(anim){
+  const k=drinkKey(),D=DRINKS[k],c=comboKey(),alt=ALT[c];
+  S.team=D.name;$("tname").innerHTML=D.name+(D.zh?`<span class="zh">${D.zh}</span>`:"");
+  $("tname").style.fontSize=D.name.length>12?"clamp(46px,14vw,62px)":"";
+  $("tmeta").textContent=`${GN[S.lang][D.glass]}: ${D[S.lang][0]}`;
+  $("tdesc").textContent=D[S.lang][1];
+  $("g-team").innerHTML=drink(k,{w:200,pour:anim});
+  $("versions").innerHTML=alt?`<span class="vlbl">${L().version}</span>`+[c,alt].map(x=>`<button aria-pressed="${x===k}" data-v="${x}">${DRINKS[x].name}</button>`).join(""):"";
+  $("versions").querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{buzz();S.pick=b.dataset.v===c?null:b.dataset.v;fillTeamResult(true);});
+}
+$("mixBtn").onclick=()=>{buzz();S.pick=null;$("mixtext").textContent=L().mixing_team;show("s-mixing");setTimeout(()=>{fillTeamResult(true);show("s-teamresult");try{navigator.vibrate&&navigator.vibrate([20,40,30])}catch(e){}},calm?300:1300);};
+
+/* ---------- wheel of life ---------- */
+function label(t,x,y){
+  const p=t.split(" & ");
+  if(p.length===2) return `<text x="${x}" y="${y}" text-anchor="middle" style="font-size:14px"><tspan x="${x}" dy="-2">${p[0]} &amp;</tspan><tspan x="${x}" dy="16">${p[1]}</tspan></text>`;
+  return `<text x="${x}" y="${y+5}" text-anchor="middle" style="font-size:${t.length>9?14:16}px">${t}</text>`;
+}
+function renderWheel(){
+  const cx=170,cy=170,R=162,r=52,n=AREAS.length,pt=(rad,a)=>[cx+rad*Math.cos(a),cy+rad*Math.sin(a)];
+  let segs="";
+  AREAS.forEach(([id,txt],i)=>{
+    const a0=-Math.PI/2+(i-.5)*2*Math.PI/n+.012,a1=-Math.PI/2+(i+.5)*2*Math.PI/n-.012,am=(a0+a1)/2;
+    const [x0,y0]=pt(R,a0),[x1,y1]=pt(R,a1),[x2,y2]=pt(r,a1),[x3,y3]=pt(r,a0),[lx,ly]=pt((R+r)/2+6,am);
+    const on=S.areas.includes(id);
+    segs+=`<g class="seg${on?' on':''}" role="button" tabindex="0" aria-pressed="${on}" data-a="${id}"><path d="M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r} ${r} 0 0 0 ${x3} ${y3} Z"/>${label(txt[S.lang][0],lx,ly)}</g>`;
+  });
+  $("wheel").innerHTML=`<svg class="wheel" viewBox="0 0 340 340" aria-label="Wheel of Life">${segs}
+    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="32" fill="var(--brass)">${S.areas.length}/2</text>
+    <text x="${cx}" y="${cy+22}" text-anchor="middle" font-family="Source Serif 4, Georgia, serif" font-style="italic" font-size="12" fill="var(--muted)">${L().chosen}</text></svg>`;
+  $("wheel").querySelectorAll(".seg").forEach(g=>{
+    const t=()=>{const id=g.dataset.a;buzz();
+      if(S.areas.includes(id))S.areas=S.areas.filter(x=>x!==id);else if(S.areas.length<2)S.areas.push(id);
+      renderWheel();const f=$("wheel").querySelector(`[data-a="${id}"]`);f&&f.focus({preventScroll:true});};
+    g.addEventListener("click",t);
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t();}});
+  });
+  $("areasBtn").disabled=S.areas.length<1;
+  $("areasBtn").textContent=S.areas.length<1?L().min1:L().find_team;
+}
+$("toWheel").onclick=()=>{buzz();S.areas=S.areas||[];renderWheel();show("s-areas");};
+$("areasBtn").onclick=()=>{if(!S.areas.length)return;buzz();renderTeam();show("s-team");};
+function buildChallenge(){
+  const sel=AREAS.filter(a=>S.areas.includes(a[0])).map(a=>a[1][S.lang]);
+  $("pairs").innerHTML=sel.map(a=>`<div class="pair"><b>${a[0]}</b><span>${L().ex(a[1])}</span></div>`).join("");
+}
+$("idea").addEventListener("input",()=>{const v=$("idea").value;$("ideaCount").textContent=v.length;$("submitBtn").disabled=v.trim().length<8;});
+$("submitBtn").onclick=()=>{
+  buzz();
+  $("dTeam").textContent=L().team+" "+S.team;$("dIdea").textContent=$("idea").value.trim();
+  $("g-done").innerHTML=drink(drinkKey(),{w:150});
+  show("s-done");
+};
+$("restartBtn").onclick=()=>{Object.assign(S,{answers:[],me:null,mates:[],areas:[],team:null});$("idea").value="";$("ideaCount").textContent="0";$("submitBtn").disabled=true;show("s-start");};
+
+$("g-start").innerHTML=glass(["S","Y","C","F"],5,{w:120,ice:true,garnish:true});
+applyLang();
+</script>
+</body>
+</html>
